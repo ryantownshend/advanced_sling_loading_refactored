@@ -1,0 +1,12 @@
+name = "Advanced Sling Loading Refactored";
+picture = "logo.paa";
+description = "Advanced Sling Loading Refactored";
+logo = "logo.paa";
+logoOver = "logo.paa";
+tooltip = "Advanced Sling Loading Refactored";
+tooltipOwned = "Advanced Sling Loading Refactored Owned";
+overview = "Advanced Sling Loading Refactored";
+author = "[SA] Duda (original), {9GU}Unclebob (keybindings), dent (updates)";
+overviewPicture = "logo.paa";
+overviewText = "Advanced Sling Loading Refactored";
+overviewFootnote = "";
