@@ -194,8 +194,6 @@ class Extended_PreInit_EventHandlers {
 
 ## list of things to change
 
-word
-
 Essential
 
 - ✓ refactor functions into client and server scripts using the CBA extended
