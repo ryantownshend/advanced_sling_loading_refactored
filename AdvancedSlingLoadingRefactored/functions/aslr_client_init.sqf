@@ -260,7 +260,6 @@ ASLR_Show_Select_Ropes_Menu = {
 	
 ASLR_Extend_Ropes = {
 	params ["_vehicle","_player",["_ropeIndex",0]];
-
 	if(local _vehicle) then {
 		private ["_existingRopes"];
 		_existingRopes = [_vehicle,_ropeIndex] call ASLR_Get_Ropes;
@@ -275,7 +274,6 @@ ASLR_Extend_Ropes = {
 	} else {
 		[_this,"ASLR_Extend_Ropes",_vehicle,true] call ASLR_RemoteExec;
 	};
-
 };
 
 ASLR_Extend_Ropes_Action = {
@@ -323,7 +321,6 @@ ASLR_Can_Extend_Ropes = {
 
 ASLR_Shorten_Ropes = {
 	params ["_vehicle","_player",["_ropeIndex",0]];
-
 	if(local _vehicle) then {
 		private ["_existingRopes"];
 		_existingRopes = [_vehicle,_ropeIndex] call ASLR_Get_Ropes;
@@ -391,7 +388,6 @@ ASLR_Can_Shorten_Ropes = {
 
 ASLR_Release_Cargo = {
 	params ["_vehicle","_player",["_ropeIndex",0]];
-
 	if(local _vehicle) then {
 		private ["_existingRopesAndCargo","_existingRopes","_existingCargo","_allCargo"];
 		_existingRopesAndCargo = [_vehicle,_ropeIndex] call ASLR_Get_Ropes_And_Cargo;
@@ -407,7 +403,6 @@ ASLR_Release_Cargo = {
 	} else {
 		[_this,"ASLR_Release_Cargo",_vehicle,true] call ASLR_RemoteExec;
 	};
-
 };
 	
 ASLR_Release_Cargo_Action = {
@@ -455,7 +450,6 @@ ASLR_Can_Release_Cargo = {
 
 ASLR_Retract_Ropes = {
 	params ["_vehicle","_player",["_ropeIndex",0]];
-
 	if(local _vehicle) then {
 		private ["_existingRopesAndCargo","_existingRopes","_existingCargo","_allRopes","_activeRopes"];
 		_existingRopesAndCargo = [_vehicle,_ropeIndex] call ASLR_Get_Ropes_And_Cargo;
@@ -541,7 +535,6 @@ ASLR_Can_Retract_Ropes = {
 
 ASLR_Deploy_Ropes = {
 	params ["_vehicle","_player",["_cargoCount",1],["_ropeLength",15]];
-
 	if(local _vehicle) then {
 		private ["_existingRopes","_cargoRopes","_startLength","_slingLoadPoints"];
 		_slingLoadPoints = [_vehicle] call ASLR_Get_Sling_Load_Points;
@@ -572,7 +565,6 @@ ASLR_Deploy_Ropes = {
 	} else {
 		[_this,"ASLR_Deploy_Ropes",_vehicle,true] call ASLR_RemoteExec;
 	};
-
 };
 
 ASLR_Deploy_Ropes_Index = {
@@ -607,54 +599,56 @@ ASLR_Deploy_Ropes_Action = {
 	} else {
 		_vehicle = vehicle player;
 	};
+	if([_vehicle] call ASLR_Can_Deploy_Ropes) then {
 	
-	_canDeployRopes = true;
-	
-	if!(missionNamespace getVariable ["ASLR_LOCKED_VEHICLES_ENABLED",false]) then {
-		if( locked _vehicle > 1 ) then {
-			["Cannot deploy cargo ropes from locked vehicle",false] call ASLR_Hint;
-			_canDeployRopes = false;
+		_canDeployRopes = true;
+		
+		if!(missionNamespace getVariable ["ASLR_LOCKED_VEHICLES_ENABLED",false]) then {
+			if( locked _vehicle > 1 ) then {
+				["Cannot deploy cargo ropes from locked vehicle",false] call ASLR_Hint;
+				_canDeployRopes = false;
+			};
 		};
-	};
-	
-	if(_canDeployRopes) then {
 		
-		_inactiveRopes = [_vehicle] call ASLR_Get_Inactive_Ropes;
-		
-		if(count _inactiveRopes > 0) then {
+		if(_canDeployRopes) then {
 			
-			if(count _inactiveRopes > 1) then {
-				player setVariable ["ASLR_Deploy_Ropes_Index_Vehicle", _vehicle];	
-				["Deploy Cargo Ropes","ASLR_Deploy_Ropes_Index_Action",_inactiveRopes] call ASLR_Show_Select_Ropes_Menu;
+			_inactiveRopes = [_vehicle] call ASLR_Get_Inactive_Ropes;
+			
+			if(count _inactiveRopes > 0) then {
+				
+				if(count _inactiveRopes > 1) then {
+					player setVariable ["ASLR_Deploy_Ropes_Index_Vehicle", _vehicle];	
+					["Deploy Cargo Ropes","ASLR_Deploy_Ropes_Index_Action",_inactiveRopes] call ASLR_Show_Select_Ropes_Menu;
+				} else {
+					[_vehicle,player,(_inactiveRopes select 0) select 0] call ASLR_Deploy_Ropes_Index;
+				};
+			
 			} else {
-				[_vehicle,player,(_inactiveRopes select 0) select 0] call ASLR_Deploy_Ropes_Index;
-			};
-		
-		} else {
-		
-			_slingLoadPoints = [_vehicle] call ASLR_Get_Sling_Load_Points;
-			if(count _slingLoadPoints > 1) then {
-				player setVariable ["ASLR_Deploy_Count_Vehicle", _vehicle];
-				ASLR_Deploy_Ropes_Count_Menu = [
-						["Deploy Ropes",false]
-				];
-				ASLR_Deploy_Ropes_Count_Menu pushBack ["For Single Cargo", [0], "", -5, [["expression", "[1] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
-				if((count _slingLoadPoints) > 1) then {
-					ASLR_Deploy_Ropes_Count_Menu pushBack ["For Double Cargo", [0], "", -5, [["expression", "[2] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
+			
+				_slingLoadPoints = [_vehicle] call ASLR_Get_Sling_Load_Points;
+				if(count _slingLoadPoints > 1) then {
+					player setVariable ["ASLR_Deploy_Count_Vehicle", _vehicle];
+					ASLR_Deploy_Ropes_Count_Menu = [
+							["Deploy Ropes",false]
+					];
+					ASLR_Deploy_Ropes_Count_Menu pushBack ["For Single Cargo", [0], "", -5, [["expression", "[1] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
+					if((count _slingLoadPoints) > 1) then {
+						ASLR_Deploy_Ropes_Count_Menu pushBack ["For Double Cargo", [0], "", -5, [["expression", "[2] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
+					};
+					if((count _slingLoadPoints) > 2) then {
+						ASLR_Deploy_Ropes_Count_Menu pushBack ["For Triple Cargo", [0], "", -5, [["expression", "[3] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
+					};
+					showCommandingMenu "";
+					showCommandingMenu "#USER:ASLR_Deploy_Ropes_Count_Menu";
+				} else {			
+					[_vehicle,player] call ASLR_Deploy_Ropes;
 				};
-				if((count _slingLoadPoints) > 2) then {
-					ASLR_Deploy_Ropes_Count_Menu pushBack ["For Triple Cargo", [0], "", -5, [["expression", "[3] call ASLR_Deploy_Ropes_Count_Action"]], "1", "1"];
-				};
-				showCommandingMenu "";
-				showCommandingMenu "#USER:ASLR_Deploy_Ropes_Count_Menu";
-			} else {			
-				[_vehicle,player] call ASLR_Deploy_Ropes;
+				
 			};
 			
 		};
-		
+	
 	};
-
 };
 
 ASLR_Deploy_Ropes_Index_Action = {
