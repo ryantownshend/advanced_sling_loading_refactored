@@ -1086,75 +1086,125 @@ adv_fnc_timedHint = {
 };
 
 
+ASLR_Deploy_Ropes_Keybind = {
+	params ["_vehicle","_player",["_cargoCount",1],["_ropeLength",15]];
+    if([_vehicle] call ASLR_Is_Supported_Vehicle) then {
+
+    	message = "Single Rope Deployed";
+	    if(_cargoCount == 2)  then {
+	    	message = "Double Rope Deployed";
+	    };
+	    if(_cargoCount == 3) then {
+	    	message = "Triple Rope Deployed";
+	    };
+
+		[message, 5] call adv_fnc_timedHint;
+		[_vehicle, _player, _cargoCount] call ASLR_Deploy_Ropes;
+	};
+};
+
+
+ASLR_Retract_Ropes_Keybind = {
+	params ["_vehicle","_player",["_ropeIndex",0]];
+	if([_vehicle] call ASLR_Is_Supported_Vehicle) then {
+		["All ropes retracted", 5] call adv_fnc_timedHint;
+		[_vehicle, _player, _ropeIndex] call ASLR_Retract_Ropes;
+	};
+};
+
+ASLR_Extend_Ropes_Keybind = {
+	params ["_vehicle","_player",["_ropeIndex",0]];
+	if([_vehicle] call ASLR_Is_Supported_Vehicle) then {
+		["All ropes extended", 5] call adv_fnc_timedHint;
+		[_vehicle, _player, _ropeIndex] call ASLR_Extend_Ropes;
+	};
+};
+
+ASLR_Shorten_Ropes_Keybind = {
+	params ["_vehicle","_player",["_ropeIndex",0]];
+	if([_vehicle] call ASLR_Is_Supported_Vehicle) then {
+		["All ropes shortened", 5] call adv_fnc_timedHint;
+		[_vehicle, _player, _ropeIndex] call ASLR_Shorten_Ropes;
+	};	
+};
+
+ASLR_Release_Cargo_Keybind = {
+	params ["_vehicle","_player",["_ropeIndex",0]];
+	if([_vehicle] call ASLR_Is_Supported_Vehicle) then {
+		["Cargo released", 5] call adv_fnc_timedHint;
+		[_vehicle, _player, _ropeIndex] call ASLR_Release_Cargo;
+	};
+};
+
 ASLR_Setup_Keybinding = {
 	//define Default Key Binding
 
 	/////////////////////////////////////DEPLOY
 
-	[	"Advanced Sling Loading",	//SINGLE ROPE
+	[	"Advanced Sling Loading Refactored",	//SINGLE ROPE
 		"KB_SingleDeploy", 
 		"Deploy Single Rope",
-		{[(vehicle player) ,player, 1] call ASLR_Deploy_Ropes}, {["Single Rope Deployed", 5] call adv_fnc_timedHint}, [DIK_DOWNARROW, [false, false, false]]
+		{[(vehicle player) ,player, 1] call ASLR_Deploy_Ropes_Keybind}, {}, [DIK_DOWNARROW, [false, false, false]]
 	] call CBA_fnc_addKeybind;
 		
-	[	"Advanced Sling Loading",	//DOUBLE ROPES
+	[	"Advanced Sling Loading Refactored",	//DOUBLE ROPES
 		"KB_DoubleDeploy", 
 		"Deploy Double Rope", 
-		{[(vehicle player) ,player, 2] call ASLR_Deploy_Ropes}, {["Double Ropes Deployed", 5] call adv_fnc_timedHint}, [DIK_DOWNARROW, [true, false, false]]
+		{[(vehicle player) ,player, 2] call ASLR_Deploy_Ropes_Keybind}, {}, [DIK_DOWNARROW, [true, false, false]]
 	] call CBA_fnc_addKeybind;
 		
-	[	"Advanced Sling Loading",	//TRIPLE ROPES
+	[	"Advanced Sling Loading Refactored",	//TRIPLE ROPES
 		"KB_TripleDeploy", 
 		"Deploy Triple Rope", 
-		{[(vehicle player) ,player, 3] call ASLR_Deploy_Ropes}, {["Triple Ropes Deployed", 5] call adv_fnc_timedHint}, [DIK_DOWNARROW, [false, true, false]]
+		{[(vehicle player) ,player, 3] call ASLR_Deploy_Ropes_Keybind}, {}, [DIK_DOWNARROW, [false, true, false]]
 	] call CBA_fnc_addKeybind;
 		
 	/////////////////////////////////////RETRACT (ALL)
 
-	[	"Advanced Sling Loading",
+	[	"Advanced Sling Loading Refactored",
 		"KB_retract",
 		"Retract Rope (ALL)", 
 		{
-			[(vehicle player), player, 0] call ASLR_Retract_Ropes;
-			[(vehicle player), player, 1] call ASLR_Retract_Ropes;
-			[(vehicle player), player, 2] call ASLR_Retract_Ropes;
-		}, {["All ropes retracted", 5] call adv_fnc_timedHint}, [DIK_UPARROW, [false, false, false]]
+			[(vehicle player), player, 0] call ASLR_Retract_Ropes_Keybind;
+			[(vehicle player), player, 1] call ASLR_Retract_Ropes_Keybind;
+			[(vehicle player), player, 2] call ASLR_Retract_Ropes_Keybind;
+		}, {}, [DIK_UPARROW, [false, false, false]]
 	] call CBA_fnc_addKeybind;
 			
 	////////////////////////////////////EXTEND (ALL)
 
-	[	"Advanced Sling Loading",
+	[	"Advanced Sling Loading Refactored",
 		"KB_extend", 
 		"Extend Rope (ALL)",
 		{
-			[(vehicle player), player, 0] call ASLR_Extend_Ropes;
-			[(vehicle player), player, 1] call ASLR_Extend_Ropes;
-			[(vehicle player), player, 2] call ASLR_Extend_Ropes;
-		}, {["All ropes extended", 5] call adv_fnc_timedHint}, [DIK_RIGHTARROW, [false, false, false]]
+			[(vehicle player), player, 0] call ASLR_Extend_Ropes_Keybind;
+			[(vehicle player), player, 1] call ASLR_Extend_Ropes_Keybind;
+			[(vehicle player), player, 2] call ASLR_Extend_Ropes_Keybind;
+		}, {}, [DIK_RIGHTARROW, [false, false, false]]
 	] call CBA_fnc_addKeybind;
-			
+
 	///////////////////////////////////SHORTEN (ALL)
 
-	[	"Advanced Sling Loading",
+	[	"Advanced Sling Loading Refactored",
 		"KB_Shorten", 
 		"Shorten Rope (ALL)",
 		{
-			[(vehicle player), player, 0] call ASLR_Shorten_Ropes;
-			[(vehicle player), player, 1] call ASLR_Shorten_Ropes;
-			[(vehicle player), player, 2] call ASLR_Shorten_Ropes;
-		}, {["All ropes shortened", 5] call adv_fnc_timedHint}, [DIK_LEFTARROW, [false, false, false]]
+			[(vehicle player), player, 0] call ASLR_Shorten_Ropes_Keybind;
+			[(vehicle player), player, 1] call ASLR_Shorten_Ropes_Keybind;
+			[(vehicle player), player, 2] call ASLR_Shorten_Ropes_Keybind;
+		}, {}, [DIK_LEFTARROW, [false, false, false]]
 	] call CBA_fnc_addKeybind;
 
 	/////////////////////////////////////RELEASE CARGO
 
-	[	"Advanced Sling Loading",
+	[	"Advanced Sling Loading Refactored",
 		"KB_Release", 
 		"Release Cargo (ALL)",
 		{
-			[(vehicle player), player, 0] call ASLR_Release_Cargo;
-			[(vehicle player), player, 1] call ASLR_Release_Cargo;
-			[(vehicle player), player, 2] call ASLR_Release_Cargo;
-		}, {["Cargo released", 5] call adv_fnc_timedHint}, [DIK_LEFTARROW, [true, true, false]]
+			[(vehicle player), player, 0] call ASLR_Release_Cargo_Keybind;
+			[(vehicle player), player, 1] call ASLR_Release_Cargo_Keybind;
+			[(vehicle player), player, 2] call ASLR_Release_Cargo_Keybind;
+		}, {}, [DIK_LEFTARROW, [true, true, false]]
 	] call CBA_fnc_addKeybind;
 
 };
